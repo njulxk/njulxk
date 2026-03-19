@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日报周报收集汇总系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="app">
+      <div id="loginPage" class="card">
+        <div class="header">
+          <h1>日报周报收集汇总系统</h1>
+          <p>请登录或注册</p>
+        </div>
+        
+        <div class="tabs">
+          <button class="tab active" onclick="showLoginTab()">登录</button>
+          <button class="tab" onclick="showRegisterTab()">注册</button>
+        </div>
+        
+        <div id="loginForm">
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label>用户名</label>
+              <input type="text" id="loginUsername" required>
+            </div>
+            <div class="form-group">
+              <label>密码</label>
+              <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary">登录</button>
+          </form>
+        </div>
+        
+        <div id="registerForm" class="hidden">
+          <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label>用户名</label>
+              <input type="text" id="registerUsername" required>
+            </div>
+            <div class="form-group">
+              <label>密码</label>
+              <input type="password" id="registerPassword" required>
+            </div>
+            <div class="form-group">
+              <label>姓名</label>
+              <input type="text" id="registerName" required>
+            </div>
+            <div class="form-group">
+              <label>邮箱（可选）</label>
+              <input type="email" id="registerEmail">
+            </div>
+            <button type="submit" class="btn btn-primary">注册</button>
+          </form>
+        </div>
+        
+        <div id="authMessage"></div>
+      </div>
+      
+      <div id="mainPage" class="hidden">
+        <nav class="nav">
+          <div class="nav-brand">日报周报系统</div>
+          <div class="nav-links">
+            <a href="#" onclick="showSection('write')">填写报告</a>
+            <a href="#" onclick="showSection('history')">历史记录</a>
+            <a href="#" id="adminLink" onclick="showSection('admin')" class="hidden">管理员</a>
+          </div>
+          <div class="nav-user">
+            <span id="userName"></span>
+            <button class="btn btn-secondary btn-sm" onclick="logout()">退出</button>
+          </div>
+        </nav>
+        
+        <div id="writeSection">
+          <div class="card">
+            <div class="header">
+              <h2>填写报告</h2>
+            </div>
+            
+            <div class="tabs">
+              <button class="tab active" onclick="setReportType('daily')">日报</button>
+              <button class="tab" onclick="setReportType('weekly')">周报</button>
+            </div>
+            
+            <form onsubmit="handleSubmitReport(event)">
+              <div class="form-group">
+                <label>姓名</label>
+                <input type="text" id="reportName" required>
+              </div>
+              <div class="form-group">
+                <label>日期</label>
+                <input type="date" id="reportDate" required>
+              </div>
+              <div class="form-group">
+                <label>内容</label>
+                <textarea id="reportContent" placeholder="请输入报告内容..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">提交报告</button>
+            </form>
+            
+            <div id="reportMessage"></div>
+          </div>
+        </div>
+        
+        <div id="historySection" class="hidden">
+          <div class="card">
+            <div class="header">
+              <h2>历史记录</h2>
+            </div>
+            
+            <div class="filters">
+              <div class="form-group">
+                <label>类型</label>
+                <select id="historyType" onchange="loadHistory()">
+                  <option value="">全部</option>
+                  <option value="daily">日报</option>
+                  <option value="weekly">周报</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>开始日期</label>
+                <input type="date" id="historyStartDate" onchange="loadHistory()">
+              </div>
+              <div class="form-group">
+                <label>结束日期</label>
+                <input type="date" id="historyEndDate" onchange="loadHistory()">
+              </div>
+            </div>
+            
+            <div id="historyList" class="report-list"></div>
+          </div>
+        </div>
+        
+        <div id="adminSection" class="hidden">
+          <div class="card">
+            <div class="header">
+              <h2>管理员面板</h2>
+            </div>
+            
+            <div class="tabs">
+              <button class="tab active" onclick="showAdminTab('summary')">汇总</button>
+              <button class="tab" onclick="showAdminTab('users')">用户管理</button>
+            </div>
+            
+            <div id="summaryTab">
+              <div class="filters">
+                <div class="form-group">
+                  <label>类型</label>
+                  <select id="summaryType" onchange="loadSummary()">
+                    <option value="daily">日报</option>
+                    <option value="weekly">周报</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>开始日期</label>
+                  <input type="date" id="summaryStartDate" onchange="loadSummary()">
+                </div>
+                <div class="form-group">
+                  <label>结束日期</label>
+                  <input type="date" id="summaryEndDate" onchange="loadSummary()">
+                </div>
+                <div class="form-group" style="flex: 0;">
+                  <label>&nbsp;</label>
+                  <div>
+                    <button class="btn btn-primary" onclick="exportSummary()">导出Word</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="summaryList"></div>
+            </div>
+            
+            <div id="usersTab" class="hidden">
+              <div id="usersList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
