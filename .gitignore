@@ -1,8 +1,0 @@
-node_modules/
-database.db
-database.db-shm
-database.db-wal
-exports/
-*.log
-.env
-.DS_Store
